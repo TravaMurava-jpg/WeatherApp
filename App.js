@@ -126,7 +126,7 @@ var todaysDate = new Date()
 var seconds = todaysDate.getTime()
 var mili = seconds+ timezone*1000-3600*1000
 var today = new Date(mili)
-const daysWeek = new Date().getDay()
+const daysWeek = today.getDay()
 const curTime = today.getHours()
 const images = {
   states: {
