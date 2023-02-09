@@ -5,7 +5,8 @@ import {
   ImageBackground,
   TextInput,
   ActivityIndicator,
-  View
+  View,
+  Image
 } from 'react-native';
 
 import axios from 'axios';
@@ -13,11 +14,11 @@ import * as Location from 'expo-location'
 
 const styles = StyleSheet.create({
   root: {
-    flex: 2
+    flex:1
   },
 
   image : {
-    flex: 1,
+    
     flexDirection: 'column'
   },
   
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
     borderBottomWidth : 3,
     padding: 5,
     paddingVertical: 20,
-    marginVertical: 100,
+    marginVertical: 72,
     marginHorizontal: 10,
     backgroundColor: "#fff",
     fontSize: 19,
@@ -51,13 +52,13 @@ const styles = StyleSheet.create({
 
   tempText : {
     fontSize: 45,
-    color: "#fff",
+    color: "#FFF",
     marginVertical: 10
   },
 
   minMaxText: {
     fontSize: 22,
-    color: "#fff",
+    color: "#FFF",
     marginVertical: 10,
     fontWeight: '500'
   },
@@ -66,8 +67,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     fontSize: 22,
     fontWeight: '500',
-    color: '#000',
-    right: 100
+    color: '#FFF',
+    right: 95
   },
 
 
@@ -80,9 +81,23 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '500',
     left: 125,
-    color: '#000',
+    color: '#FFF',
    
   },
+
+  image1: {
+    weight: 80,
+    height: 100,
+    flex:0
+  },
+
+  feels_like:{
+    fontSize: 22,
+    fontWeight: '500',
+    color: '#FFF'
+  },
+
+  
 
 });
 
@@ -111,6 +126,8 @@ var seconds = todaysDate.getTime()
 var mili = seconds+ timezone*1000-3600*1000
 var today = new Date(mili)
 const daysWeek = new Date().getDay()
+const curTime = today.getHours()
+
 
 
 useEffect(() => {
@@ -136,6 +153,7 @@ useEffect(() => {
           setData(res.data)
           setTimeZone(res.data.timezone)
           setDataRecieved(true)
+          console.log(data)
         })
         .catch(e=> console.log(e))
         })
@@ -160,12 +178,17 @@ const dataHandler = useCallback(() => {
     setTimeZone(res.data.city.timezone)
     setForecastData(res.data.list)
     setDataRecieved(true)
+    console.log(forecastData)
   })
 }, [api.key, input])
 
+var icon = (curTime > 18 || curTime < 10) ? require('./assets/background2.jpg') : require('./assets/background.jpg');
+var daystyle = (curTime > 18 || curTime < 10) ? styles.day_night : styles.dateText
+console.log(daystyle)
   return (
+    
     <View style={styles.root}>
-      <ImageBackground source={require('./assets/background.jpg')}
+      <ImageBackground source={icon}
       resizeMode="cover"
       style={styles.image}>
         <View>
@@ -188,7 +211,12 @@ const dataHandler = useCallback(() => {
           </Text>
           <Text style={styles.dateText}>{today.toLocaleString()}</Text>
           <Text style={styles.dateText}>{days[daysWeek]}</Text>
+          <View>
+          <Image style={styles.image1} source={{uri: `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`}}/>
+          </View>
           <Text style={styles.tempText}>{`${Math.round(data.main.temp)} °C`}</Text>
+         
+          <Text style={styles.feels_like}>{`*Feels like ${Math.round(data.main.feels_like)} °C`}</Text>
           <Text style={styles.minMaxText}>{`Min ${Math.round(data.main.temp_min)}  °C / Max ${Math.round(data.main.temp_max)} °C`}</Text>
           {forecastData.map((forecast, index) => { return(
             <View key ={index} style={styles.main}>
