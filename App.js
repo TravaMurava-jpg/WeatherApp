@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     borderBottomWidth : 3,
     padding: 5,
     paddingVertical: 20,
-    marginVertical: 72,
+    marginVertical: 50,
     marginHorizontal: 10,
     backgroundColor: "#fff",
     fontSize: 19,
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   tempText : {
     fontSize: 45,
     color: "#FFF",
-    marginVertical: 10
+    marginVertical: 8
   },
 
   minMaxText: {
@@ -86,9 +86,10 @@ const styles = StyleSheet.create({
   },
 
   image1: {
-    weight: 80,
-    height: 100,
-    flex:0
+  width: 150,
+  height: 130
+
+    
   },
 
   feels_like:{
@@ -127,6 +128,28 @@ var mili = seconds+ timezone*1000-3600*1000
 var today = new Date(mili)
 const daysWeek = new Date().getDay()
 const curTime = today.getHours()
+const images = {
+  states: {
+    '01d': require(`./assets/01d.png`),
+    '01n': require(`./assets/01n.png`),
+    '02d': require(`./assets/02d.png`),
+    '02n': require(`./assets/02n.png`),
+    '03d': require(`./assets/03d.png`),
+    '03n': require(`./assets/03n.png`),
+    '04d': require(`./assets/04d.png`),
+    '04n': require(`./assets/04n.png`),
+    '09d': require(`./assets/09d.png`),
+    '09n': require(`./assets/09n.png`),
+    '10d': require(`./assets/10d.png`),
+    '10n': require(`./assets/10n.png`),
+    '11d': require(`./assets/11d.png`),
+    '11n': require(`./assets/11n.png`),
+    '13d': require(`./assets/13d.png`),
+    '13n': require(`./assets/13n.png`),
+    '50d': require(`./assets/50d.png`),
+    '50n': require(`./assets/50n.png`),
+  }
+}
 
 
 
@@ -153,7 +176,6 @@ useEffect(() => {
           setData(res.data)
           setTimeZone(res.data.timezone)
           setDataRecieved(true)
-          console.log(data)
         })
         .catch(e=> console.log(e))
         })
@@ -170,6 +192,7 @@ const dataHandler = useCallback(() => {
   axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${input}&units=metric&appid=${api.key}`)
   .then(res => {
     setData(res.data)
+    console.log(data)
   })
   .catch(e=> console.log(e))
   .finally(() => setLoading(false))
@@ -178,13 +201,11 @@ const dataHandler = useCallback(() => {
     setTimeZone(res.data.city.timezone)
     setForecastData(res.data.list)
     setDataRecieved(true)
-    console.log(forecastData)
   })
 }, [api.key, input])
 
 var icon = (curTime > 18 || curTime < 10) ? require('./assets/background2.jpg') : require('./assets/background.jpg');
-var daystyle = (curTime > 18 || curTime < 10) ? styles.day_night : styles.dateText
-console.log(daystyle)
+
   return (
     
     <View style={styles.root}>
@@ -205,6 +226,7 @@ console.log(daystyle)
             )}
 
 {dataRecieved && (
+
           <View style={styles.infoView}>
           <Text style={styles.cityCountryText}>
             {`${data.name} ${data.sys.country}`}
@@ -212,8 +234,9 @@ console.log(daystyle)
           <Text style={styles.dateText}>{today.toLocaleString()}</Text>
           <Text style={styles.dateText}>{days[daysWeek]}</Text>
           <View>
-          <Image style={styles.image1} source={{uri: `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`}}/>
+          <Image style={styles.image1} source={images.states[data.weather[0].icon]}/>
           </View>
+          <Text style={styles.dateText}>{data.weather[0].description}</Text>
           <Text style={styles.tempText}>{`${Math.round(data.main.temp)} °C`}</Text>
          
           <Text style={styles.feels_like}>{`*Feels like ${Math.round(data.main.feels_like)} °C`}</Text>
@@ -231,8 +254,8 @@ console.log(daystyle)
 
     </View>
   )
-}
 
 
+          }
 
 export default App;
