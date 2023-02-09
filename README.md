@@ -1,6 +1,6 @@
 # WeatherApp
 
-Simple React Native app, that shows current weather in current or any choosed location, with forecast
+Simple React Native app, that shows current weather in current or any choosed location, with forecast, dynamic background and images of current weather state
 - The API used is OpenWeatherMap
 
 To properly launch the app you need to:
